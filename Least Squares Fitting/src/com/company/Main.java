@@ -8,7 +8,7 @@ public class Main {
         Scanner s = new Scanner(System.in);
 //        int polyDegree = getDegree(s);
 //        ArrayList<double[]>userPoints = getUserPoints(s);
-        int polyDegree = 3;
+        int polyDegree = 2;
         double[][] coeffecientMatrix = new double[polyDegree+1][polyDegree+1];
         ArrayList<double[]> userPoints = new ArrayList<double[]>();
         double[] point1 = {2, 1};
@@ -62,6 +62,42 @@ public class Main {
         Matrix FINAL = coeffecient.solve(results);
 
         printMatrix(FINAL);
+        System.out.println(correlationCoefficient(userPoints, FINAL));
+    }
+
+    public static double correlationCoefficient(ArrayList<double[]> userPoints, Matrix FINAL) {
+        double xMean = meanOfSet(userPoints, 0);
+        double yMean = meanOfSet(userPoints, 1);
+
+        double top = 0;
+        double bottom = 0;
+
+        for(int ii = 0; ii < userPoints.size(); ii++) {
+            top += Math.pow(userPoints.get(ii)[1] - convertFinal(FINAL, userPoints.get(ii)[0]), 2);
+            bottom += Math.pow((userPoints.get(ii)[1] - yMean), 2);
+        }
+
+        return (1 - (top/bottom));
+    }
+
+    public static double convertFinal(Matrix m, double x) {
+        double[] result = new double[m.getRowDimension()];
+        for(int ii = 0; ii < m.getRowDimension(); ii++) {
+            result[ii] = m.get(ii, 0);
+        }
+        double output = 0;
+        for(int jj = 0; jj < result.length; jj++) {
+            output += Math.pow(x, result.length-jj-1)*result[jj];
+        }
+        return output;
+    }
+
+    public static double meanOfSet(ArrayList<double[]> points, int coord) {
+        double mean = 0;
+        for(double[] point : points) {
+            mean += point[coord];
+        }
+        return mean / points.size();
     }
 
     public static void printMatrix(Matrix m) {
