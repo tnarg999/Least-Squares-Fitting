@@ -1,3 +1,5 @@
+import Jama.Matrix;
+
 import java.util.*;
 
 public class Main {
@@ -11,10 +13,12 @@ public class Main {
         ArrayList<double[]> userPoints = new ArrayList<double[]>();
         double[] point1 = {2, 1};
         double[] point2 = {3, 4};
-        double[] point3 = {2, 6};
+        double[] point3 = {4, 6};
+        double[] point4 = {-3, 5};
         userPoints.add(point1);
         userPoints.add(point2);
         userPoints.add(point3);
+        userPoints.add(point4);
 
         for(int jj = 0; jj < polyDegree+1; jj++) {
             double[] row = new double[polyDegree+1];
@@ -22,12 +26,7 @@ public class Main {
                 int element = 0;
                 for(int kk = 0; kk < userPoints.size(); kk++) {
                     double x = userPoints.get(kk)[0];
-                    if(ii != 2*polyDegree) {
-                        element += Math.pow(x, 2*polyDegree - ii);
-                    }
-                    else {
-                        element = 1;
-                    }
+                    element += Math.pow(x, 2*polyDegree - ii);
                 }
                 row[ii-jj] = element;
             }
@@ -41,7 +40,7 @@ public class Main {
             System.out.println();
         }
 
-        double[] resultMatrix = new double[polyDegree+1];
+        double[][] resultMatrix = new double[polyDegree+1][1];
         for(int ii = 0; ii < polyDegree + 1; ii++) {
             int element = 0;
             for(int jj = 0; jj < userPoints.size(); jj++) {
@@ -49,11 +48,29 @@ public class Main {
                 double y = userPoints.get(jj)[1];
                 element += Math.pow(x, polyDegree-ii)*y;
             }
-            resultMatrix[ii] = element;
+            resultMatrix[ii][0] = element;
         }
 
-        for(double p: resultMatrix) {
-            System.out.println(p);
+        for(double[] p: resultMatrix) {
+            for(double x : p) {
+                System.out.println(x);
+            }
+        }
+
+        Matrix coeffecient = new Matrix(coeffecientMatrix);
+        Matrix results = new Matrix(resultMatrix);
+        Matrix FINAL = coeffecient.solve(results);
+
+        printMatrix(FINAL);
+    }
+
+    public static void printMatrix(Matrix m) {
+        System.out.println(m.getRowDimension() + "x" + m.getColumnDimension());
+        for(int ii = 0; ii < m.getRowDimension(); ii++) {
+            for(int jj = 0; jj < m.getColumnDimension(); jj++) {
+                System.out.print(m.get(ii, jj) + " ");
+            }
+            System.out.println();
         }
     }
 
