@@ -1,29 +1,22 @@
 import Jama.Matrix;
-
 import java.util.*;
+import java.io.*;
 
 public class Main {
 
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-//        int polyDegree = getDegree(s);
-//        ArrayList<double[]>userPoints = getUserPoints(s);
+        //int polyDegree = getDegree(s);
+        //ArrayList<double[]>userPoints = getUserPoints(s);
         int polyDegree = 2;
         double[][] coeffecientMatrix = new double[polyDegree+1][polyDegree+1];
-        ArrayList<double[]> userPoints = new ArrayList<double[]>();
-        double[] point1 = {2, 1};
-        double[] point2 = {3, 4};
-        double[] point3 = {4, 6};
-        double[] point4 = {-3, 5};
-        userPoints.add(point1);
-        userPoints.add(point2);
-        userPoints.add(point3);
-        userPoints.add(point4);
-
+        ArrayList<double[]> userPoints = fileIO();
+        System.out.println("Size: " + userPoints.size());
+        printArrayList(userPoints);
         for(int jj = 0; jj < polyDegree+1; jj++) {
             double[] row = new double[polyDegree+1];
             for(int ii = jj; ii < polyDegree+jj+1; ii++) {
-                int element = 0;
+                double element = 0;
                 for(int kk = 0; kk < userPoints.size(); kk++) {
                     double x = userPoints.get(kk)[0];
                     element += Math.pow(x, 2*polyDegree - ii);
@@ -42,7 +35,7 @@ public class Main {
 
         double[][] resultMatrix = new double[polyDegree+1][1];
         for(int ii = 0; ii < polyDegree + 1; ii++) {
-            int element = 0;
+            double element = 0;
             for(int jj = 0; jj < userPoints.size(); jj++) {
                 double x = userPoints.get(jj)[0];
                 double y = userPoints.get(jj)[1];
@@ -57,12 +50,35 @@ public class Main {
             }
         }
 
-        Matrix coeffecient = new Matrix(coeffecientMatrix);
+        Matrix coefficient = new Matrix(coeffecientMatrix);
         Matrix results = new Matrix(resultMatrix);
-        Matrix FINAL = coeffecient.solve(results);
+        Matrix FINAL = coefficient.solve(results);
 
         printMatrix(FINAL);
         System.out.println(correlationCoefficient(userPoints, FINAL));
+
+    }
+
+    public static ArrayList<double[]> fileIO() {
+        ArrayList<double[]> points = new ArrayList<double[]>();
+        String directory = "C:\\Users\\Grant.Hugh\\Desktop\\Least-Squares-Fitting\\Least Squares Fitting\\";
+        File f = new File(directory + "least_squares_sample2.txt");
+        Scanner fileScan = null;
+        try {
+            fileScan = new Scanner(f);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        while(fileScan.hasNextLine()) {
+            String line = fileScan.nextLine();
+            String[] stringPoint = line.split("\t");
+            double[] point = new double[2];
+            point[0] = Double.parseDouble(stringPoint[0]);
+            point[1] = Double.parseDouble(stringPoint[1]);
+            points.add(point);
+        }
+        return points;
     }
 
     public static double correlationCoefficient(ArrayList<double[]> userPoints, Matrix FINAL) {
@@ -144,8 +160,9 @@ public class Main {
     public static void printArrayList(ArrayList<double[]> allPoints) {
         for(double[] array: allPoints) {
             for (Object o : array) {
-                System.out.println(o);
+                System.out.print(o + " ");
             }
+            System.out.println();
         }
     }
 }
