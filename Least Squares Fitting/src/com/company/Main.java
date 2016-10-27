@@ -6,13 +6,9 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-        //int polyDegree = getDegree(s);
-        //ArrayList<double[]>userPoints = getUserPoints(s);
-        int polyDegree = 2;
+        int polyDegree = getDegree(s);
         double[][] coeffecientMatrix = new double[polyDegree+1][polyDegree+1];
-        ArrayList<double[]> userPoints = fileIO();
-        System.out.println("Size: " + userPoints.size());
-        printArrayList(userPoints);
+        ArrayList<double[]> userPoints = fileIO(s);
         for(int jj = 0; jj < polyDegree+1; jj++) {
             double[] row = new double[polyDegree+1];
             for(int ii = jj; ii < polyDegree+jj+1; ii++) {
@@ -26,13 +22,6 @@ public class Main {
             coeffecientMatrix[jj] = row;
         }
 
-        for(double[] x : coeffecientMatrix) {
-            for(double y : x) {
-                System.out.print(y + " ");
-            }
-            System.out.println();
-        }
-
         double[][] resultMatrix = new double[polyDegree+1][1];
         for(int ii = 0; ii < polyDegree + 1; ii++) {
             double element = 0;
@@ -44,31 +33,29 @@ public class Main {
             resultMatrix[ii][0] = element;
         }
 
-        for(double[] p: resultMatrix) {
-            for(double x : p) {
-                System.out.println(x);
-            }
-        }
-
         Matrix coefficient = new Matrix(coeffecientMatrix);
         Matrix results = new Matrix(resultMatrix);
         Matrix FINAL = coefficient.solve(results);
 
+        System.out.println();
         printMatrix(FINAL);
-        System.out.println(correlationCoefficient(userPoints, FINAL));
+        System.out.println();
+        System.out.println("R^2: " + correlationCoefficient(userPoints, FINAL));
 
     }
 
-    public static ArrayList<double[]> fileIO() {
+
+    public static ArrayList<double[]> fileIO(Scanner s) {
         ArrayList<double[]> points = new ArrayList<double[]>();
         String directory = "C:\\Users\\Grant.Hugh\\Desktop\\Least-Squares-Fitting\\Least Squares Fitting\\";
-        File f = new File(directory + "least_squares_sample2.txt");
+        System.out.print("File Name: ");
+        String fileName = s.next();
+        File f = new File(directory + fileName);
         Scanner fileScan = null;
         try {
             fileScan = new Scanner(f);
-        }
-        catch(Exception e) {
-            System.out.println(e);
+        } catch (Exception e) {
+            System.out.println("File doesn't exist.");
         }
         while(fileScan.hasNextLine()) {
             String line = fileScan.nextLine();
@@ -117,17 +104,19 @@ public class Main {
     }
 
     public static void printMatrix(Matrix m) {
-        System.out.println(m.getRowDimension() + "x" + m.getColumnDimension());
+        //System.out.println(m.getRowDimension() + "x" + m.getColumnDimension());
+        char coName = 'A';
         for(int ii = 0; ii < m.getRowDimension(); ii++) {
             for(int jj = 0; jj < m.getColumnDimension(); jj++) {
-                System.out.print(m.get(ii, jj) + " ");
+                System.out.print(coName + ": " + m.get(ii, jj) + " ");
+                coName = (char) (coName + 1);
             }
             System.out.println();
         }
     }
 
     public static int getDegree(Scanner s) {
-        System.out.println("Polynomial Degree: ");
+        System.out.print("Polynomial Degree: ");
         return s.nextInt();
     }
 
@@ -138,23 +127,6 @@ public class Main {
         double y = s.nextFloat();
         double[] point = {x,y};
         return point;
-    }
-
-    public static ArrayList getUserPoints(Scanner s)  {
-        ArrayList<double[]> allPoints = new ArrayList<double[]>();
-        boolean seguir = true;
-        while(seguir) {
-            System.out.println("Stop?");
-            String input = s.next();
-            if (input.equals("stop")) {
-                seguir = false;
-            }
-            if (seguir) {
-                allPoints.add(getCoords(s));
-            }
-        }
-        //printArrayList(allPoints);
-        return allPoints;
     }
 
     public static void printArrayList(ArrayList<double[]> allPoints) {
