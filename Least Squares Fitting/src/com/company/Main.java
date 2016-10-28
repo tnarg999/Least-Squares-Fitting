@@ -2,19 +2,19 @@
 //another tab separated text file, please put it in the same folder as the other two text files.
 
 //There is basically zero error validation, so if you mess up typing the filename, it will throw an error and you will
-//have to restart the program. Sorry for the inconvenience. 
+//have to restart the program. Sorry for the inconvenience.
 
 import Jama.Matrix;
 import java.util.*;
 import java.io.*;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         int polyDegree = getDegree(s);
         double[][] coeffecientMatrix = new double[polyDegree+1][polyDegree+1];
         ArrayList<double[]> userPoints = fileIO(s);
+        //Data processing
         for(int jj = 0; jj < polyDegree+1; jj++) {
             double[] row = new double[polyDegree+1];
             for(int ii = jj; ii < polyDegree+jj+1; ii++) {
@@ -43,6 +43,7 @@ public class Main {
         Matrix results = new Matrix(resultMatrix);
         Matrix FINAL = coefficient.solve(results);
 
+        //Error handling in the case where the determinant is zero
         if(coefficient.det() != 0) {
             System.out.println();
             functionForm(polyDegree);
@@ -56,7 +57,7 @@ public class Main {
 
     }
 
-
+    //This function reads in the file and catches error
     public static ArrayList<double[]> fileIO(Scanner s) {
         ArrayList<double[]> points = new ArrayList<double[]>();
         System.out.print("File Name: ");
@@ -79,6 +80,7 @@ public class Main {
         return points;
     }
 
+    //This function calculates the correlation coefficient
     public static double correlationCoefficient(ArrayList<double[]> userPoints, Matrix FINAL) {
         double xMean = meanOfSet(userPoints, 0);
         double yMean = meanOfSet(userPoints, 1);
@@ -94,6 +96,7 @@ public class Main {
         return (1 - (top/bottom));
     }
 
+    //This function calculates the function output when given an input
     public static double convertFinal(Matrix m, double x) {
         double[] result = new double[m.getRowDimension()];
         for(int ii = 0; ii < m.getRowDimension(); ii++) {
@@ -106,6 +109,7 @@ public class Main {
         return output;
     }
 
+    //This function computes the mean of a set of given points
     public static double meanOfSet(ArrayList<double[]> points, int coord) {
         double mean = 0;
         for(double[] point : points) {
@@ -114,6 +118,7 @@ public class Main {
         return mean / points.size();
     }
 
+    //This function tells the user what form the function will be in
     public static void functionForm(int x) {
         System.out.print("Your function will be in the form ");
         char co = 'A';
@@ -130,6 +135,7 @@ public class Main {
         System.out.println();
     }
 
+    //This function prints the matrix
     public static void printMatrix(Matrix m) {
         //System.out.println(m.getRowDimension() + "x" + m.getColumnDimension());
         char coName = 'A';
@@ -142,11 +148,13 @@ public class Main {
         }
     }
 
+    //This function reads in the degree of the polynomial
     public static int getDegree(Scanner s) {
         System.out.print("Polynomial Degree: ");
         return s.nextInt();
     }
 
+    //This function gets the coordinates from the file
     public static double[] getCoords(Scanner s) {
         System.out.print("x coordinate: ");
         double x = s.nextFloat();
@@ -156,6 +164,7 @@ public class Main {
         return point;
     }
 
+    //This function prints the array
     public static void printArrayList(ArrayList<double[]> allPoints) {
         for(double[] array: allPoints) {
             for (Object o : array) {
