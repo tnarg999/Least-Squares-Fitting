@@ -1,3 +1,9 @@
+//The two files that can be tested are least_squares_sample1.txt and least_squares_sample2.txt. If you want to test
+//another tab separated text file, please put it in the same folder as the other two text files.
+
+//There is basically zero error validation, so if you mess up typing the filename, it will throw an error and you will
+//have to restart the program. Sorry for the inconvenience. 
+
 import Jama.Matrix;
 import java.util.*;
 import java.io.*;
@@ -37,20 +43,25 @@ public class Main {
         Matrix results = new Matrix(resultMatrix);
         Matrix FINAL = coefficient.solve(results);
 
-        System.out.println();
-        printMatrix(FINAL);
-        System.out.println();
-        System.out.println("R^2: " + correlationCoefficient(userPoints, FINAL));
+        if(coefficient.det() != 0) {
+            System.out.println();
+            functionForm(polyDegree);
+            printMatrix(FINAL);
+            System.out.println();
+            System.out.println("R^2: " + correlationCoefficient(userPoints, FINAL));
+        }
+        else {
+            System.out.println("Solution does not exist (determinant is zero). Try a different degree polynomial.");
+        }
 
     }
 
 
     public static ArrayList<double[]> fileIO(Scanner s) {
         ArrayList<double[]> points = new ArrayList<double[]>();
-        String directory = "C:\\Users\\Grant.Hugh\\Desktop\\Least-Squares-Fitting\\Least Squares Fitting\\";
         System.out.print("File Name: ");
         String fileName = s.next();
-        File f = new File(directory + fileName);
+        File f = new File(fileName);
         Scanner fileScan = null;
         try {
             fileScan = new Scanner(f);
@@ -101,6 +112,22 @@ public class Main {
             mean += point[coord];
         }
         return mean / points.size();
+    }
+
+    public static void functionForm(int x) {
+        System.out.print("Your function will be in the form ");
+        char co = 'A';
+        for(int ii = x; ii >= 0; ii--) {
+            System.out.print(co);
+            if(ii != 0) {
+                System.out.print("x^"+ii);
+            }
+            if(ii != 0) {
+                System.out.print("+");
+            }
+            co = (char) (co+1);
+        }
+        System.out.println();
     }
 
     public static void printMatrix(Matrix m) {
